@@ -1,0 +1,32 @@
+version: "3"
+services:
+    database:
+        restart: always
+        image: "postgres:latest"
+        env_file: .env-db
+        volumes: 
+            - ./postgres_data:/var/lib/postgresql/data/
+        ports: 
+            - "5432:5432"
+    redis:
+        image: "redis:latest"
+    nginx:
+        restart: always
+        build:
+            dockerfile: Dockerfile
+            context: ./nginx
+        ports: 
+            - "80:80"
+    frontend:
+        image: simp13/myfrontend:latest
+        volumes:
+            - /app/node_modules
+            - ./myfrontend:/app
+    backend:
+        image: simp13/mybackend2:latest
+        env_file: .env
+        volumes:
+            - ./mybackend:/usr/src/app
+
+volumes: 
+    postgres_data:
